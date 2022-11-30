@@ -1,6 +1,10 @@
 #[cfg(all(
     any(feature = "http", feature = "gateway"),
-    not(any(feature = "rustls_backend", feature = "native_tls_backend"))
+    not(any(
+        feature = "chrome_backend",
+        feature = "rustls_backend",
+        feature = "native_tls_backend"
+    ))
 ))]
 compile_error!(
     "You have the `http` or `gateway` feature enabled, \
