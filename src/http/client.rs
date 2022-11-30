@@ -160,14 +160,7 @@ impl HttpBuilder {
 
         let ratelimiter_disabled = self.ratelimiter_disabled;
 
-        Http {
-            client,
-            ratelimiter,
-            ratelimiter_disabled,
-            proxy: self.proxy,
-            token,
-            application_id,
-        }
+        Http { client, ratelimiter, ratelimiter_disabled, proxy: self.proxy, token, application_id }
     }
 }
 
@@ -279,10 +272,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: None,
-                route: RouteInfo::AddGuildMember {
-                    guild_id,
-                    user_id,
-                },
+                route: RouteInfo::AddGuildMember { guild_id, user_id },
             })
             .await?;
 
@@ -306,16 +296,15 @@ impl Http {
         role_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::AddMemberRole {
-                guild_id,
-                role_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::AddMemberRole { guild_id, role_id, user_id },
             },
-        })
+        )
         .await
     }
 
@@ -335,16 +324,19 @@ impl Http {
         delete_message_days: u8,
         reason: &str,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: Some(reason_into_header(reason)),
-            route: RouteInfo::GuildBanUser {
-                delete_message_days: Some(delete_message_days),
-                guild_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: Some(reason_into_header(reason)),
+                route: RouteInfo::GuildBanUser {
+                    delete_message_days: Some(delete_message_days),
+                    guild_id,
+                    user_id,
+                },
             },
-        })
+        )
         .await
     }
 
@@ -356,14 +348,15 @@ impl Http {
     /// This should rarely be used for bots, although it is a good indicator that a
     /// long-running command is still being processed.
     pub async fn broadcast_typing(&self, channel_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::BroadcastTyping {
-                channel_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::BroadcastTyping { channel_id },
             },
-        })
+        )
         .await
     }
 
@@ -387,9 +380,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateChannel {
-                guild_id,
-            },
+            route: RouteInfo::CreateChannel { guild_id },
         })
         .await
     }
@@ -419,10 +410,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::CreatePublicThread {
-                channel_id,
-                message_id,
-            },
+            route: RouteInfo::CreatePublicThread { channel_id, message_id },
         })
         .await
     }
@@ -439,9 +427,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::CreatePrivateThread {
-                channel_id,
-            },
+            route: RouteInfo::CreatePrivateThread { channel_id },
         })
         .await
     }
@@ -464,9 +450,7 @@ impl Http {
             body: Some(to_string(map)?.as_bytes()),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateEmoji {
-                guild_id,
-            },
+            route: RouteInfo::CreateEmoji { guild_id },
         })
         .await
     }
@@ -652,15 +636,15 @@ impl Http {
         map: &Value,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: Some(to_string(map)?.as_bytes()),
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateGuildIntegration {
-                guild_id,
-                integration_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(to_string(map)?.as_bytes()),
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::CreateGuildIntegration { guild_id, integration_id },
             },
-        })
+        )
         .await
     }
 
@@ -676,15 +660,15 @@ impl Http {
         interaction_token: &str,
         map: &Value,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: Some(to_string(map)?.as_bytes()),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::CreateInteractionResponse {
-                interaction_id,
-                interaction_token,
+        self.wind(
+            204,
+            Request {
+                body: Some(to_string(map)?.as_bytes()),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::CreateInteractionResponse { interaction_id, interaction_token },
             },
-        })
+        )
         .await
     }
 
@@ -701,19 +685,19 @@ impl Http {
         map: &Value,
         files: impl IntoIterator<Item = AttachmentType<'_>>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: Some(Multipart {
-                files: files.into_iter().map(Into::into).collect(),
-                payload_json: Some(to_value(map)?),
-                fields: vec![],
-            }),
-            headers: None,
-            route: RouteInfo::CreateInteractionResponse {
-                interaction_id,
-                interaction_token,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: Some(Multipart {
+                    files: files.into_iter().map(Into::into).collect(),
+                    payload_json: Some(to_value(map)?),
+                    fields: vec![],
+                }),
+                headers: None,
+                route: RouteInfo::CreateInteractionResponse { interaction_id, interaction_token },
             },
-        })
+        )
         .await
     }
 
@@ -739,9 +723,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateInvite {
-                channel_id,
-            },
+            route: RouteInfo::CreateInvite { channel_id },
         })
         .await
     }
@@ -755,15 +737,15 @@ impl Http {
     ) -> Result<()> {
         let body = to_vec(map)?;
 
-        self.wind(204, Request {
-            body: Some(&body),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::CreatePermission {
-                channel_id,
-                target_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(&body),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::CreatePermission { channel_id, target_id },
             },
-        })
+        )
         .await
     }
 
@@ -787,16 +769,19 @@ impl Http {
         message_id: u64,
         reaction_type: &ReactionType,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::CreateReaction {
-                reaction: &reaction_type.as_data(),
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::CreateReaction {
+                    reaction: &reaction_type.as_data(),
+                    channel_id,
+                    message_id,
+                },
             },
-        })
+        )
         .await
     }
 
@@ -813,9 +798,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: audit_log_reason.map(reason_into_header),
-                route: RouteInfo::CreateRole {
-                    guild_id,
-                },
+                route: RouteInfo::CreateRole { guild_id },
             })
             .await?
             .json::<Value>()
@@ -846,9 +829,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateScheduledEvent {
-                guild_id,
-            },
+            route: RouteInfo::CreateScheduledEvent { guild_id },
         })
         .await
     }
@@ -885,9 +866,7 @@ impl Http {
                 payload_json: None,
             }),
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateSticker {
-                guild_id,
-            },
+            route: RouteInfo::CreateSticker { guild_id },
         })
         .await
     }
@@ -933,9 +912,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::CreateWebhook {
-                channel_id,
-            },
+            route: RouteInfo::CreateWebhook { channel_id },
         })
         .await
     }
@@ -946,37 +923,36 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::DeleteChannel {
-                channel_id,
-            },
+            route: RouteInfo::DeleteChannel { channel_id },
         })
         .await
     }
 
     /// Deletes a stage instance.
     pub async fn delete_stage_instance(&self, channel_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteStageInstance {
-                channel_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteStageInstance { channel_id },
             },
-        })
+        )
         .await
     }
 
     /// Deletes an emoji from a server.
     pub async fn delete_emoji(&self, guild_id: u64, emoji_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteEmoji {
-                guild_id,
-                emoji_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteEmoji { guild_id, emoji_id },
             },
-        })
+        )
         .await
     }
 
@@ -986,30 +962,36 @@ impl Http {
         interaction_token: &str,
         message_id: u64,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteFollowupMessage {
-                application_id: self.try_application_id()?,
-                interaction_token,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteFollowupMessage {
+                    application_id: self.try_application_id()?,
+                    interaction_token,
+                    message_id,
+                },
             },
-        })
+        )
         .await
     }
 
     /// Deletes a global command.
     pub async fn delete_global_application_command(&self, command_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteGlobalApplicationCommand {
-                application_id: self.try_application_id()?,
-                command_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteGlobalApplicationCommand {
+                    application_id: self.try_application_id()?,
+                    command_id,
+                },
             },
-        })
+        )
         .await
     }
 
@@ -1019,9 +1001,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::DeleteGuild {
-                guild_id,
-            },
+            route: RouteInfo::DeleteGuild { guild_id },
         })
         .await
     }
@@ -1032,30 +1012,33 @@ impl Http {
         guild_id: u64,
         command_id: u64,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteGuildApplicationCommand {
-                application_id: self.try_application_id()?,
-                guild_id,
-                command_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteGuildApplicationCommand {
+                    application_id: self.try_application_id()?,
+                    guild_id,
+                    command_id,
+                },
             },
-        })
+        )
         .await
     }
 
     /// Removes an integration from a guild.
     pub async fn delete_guild_integration(&self, guild_id: u64, integration_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteGuildIntegration {
-                guild_id,
-                integration_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteGuildIntegration { guild_id, integration_id },
             },
-        })
+        )
         .await
     }
 
@@ -1065,9 +1048,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::DeleteInvite {
-                code,
-            },
+            route: RouteInfo::DeleteInvite { code },
         })
         .await
     }
@@ -1075,28 +1056,29 @@ impl Http {
     /// Deletes a message if created by us or we have
     /// specific permissions.
     pub async fn delete_message(&self, channel_id: u64, message_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteMessage {
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteMessage { channel_id, message_id },
             },
-        })
+        )
         .await
     }
 
     /// Deletes a bunch of messages, only works for bots.
     pub async fn delete_messages(&self, channel_id: u64, map: &Value) -> Result<()> {
-        self.wind(204, Request {
-            body: Some(to_string(map)?.as_bytes()),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteMessages {
-                channel_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(to_string(map)?.as_bytes()),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteMessages { channel_id },
             },
-        })
+        )
         .await
     }
 
@@ -1119,15 +1101,15 @@ impl Http {
     /// # }
     /// ```
     pub async fn delete_message_reactions(&self, channel_id: u64, message_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteMessageReactions {
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteMessageReactions { channel_id, message_id },
             },
-        })
+        )
         .await
     }
 
@@ -1138,16 +1120,19 @@ impl Http {
         message_id: u64,
         reaction_type: &ReactionType,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteMessageReactionEmoji {
-                reaction: &reaction_type.as_data(),
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteMessageReactionEmoji {
+                    reaction: &reaction_type.as_data(),
+                    channel_id,
+                    message_id,
+                },
             },
-        })
+        )
         .await
     }
 
@@ -1156,29 +1141,32 @@ impl Http {
         &self,
         interaction_token: &str,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteOriginalInteractionResponse {
-                application_id: self.try_application_id()?,
-                interaction_token,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteOriginalInteractionResponse {
+                    application_id: self.try_application_id()?,
+                    interaction_token,
+                },
             },
-        })
+        )
         .await
     }
 
     /// Deletes a permission override from a role or a member in a channel.
     pub async fn delete_permission(&self, channel_id: u64, target_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeletePermission {
-                channel_id,
-                target_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeletePermission { channel_id, target_id },
             },
-        })
+        )
         .await
     }
 
@@ -1193,31 +1181,34 @@ impl Http {
     ) -> Result<()> {
         let user = user_id.map_or_else(|| "@me".to_string(), |uid| uid.to_string());
 
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteReaction {
-                reaction: &reaction_type.as_data(),
-                user: &user,
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteReaction {
+                    reaction: &reaction_type.as_data(),
+                    user: &user,
+                    channel_id,
+                    message_id,
+                },
             },
-        })
+        )
         .await
     }
 
     /// Deletes a role from a server. Can't remove the default everyone role.
     pub async fn delete_role(&self, guild_id: u64, role_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteRole {
-                guild_id,
-                role_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteRole { guild_id, role_id },
             },
-        })
+        )
         .await
     }
 
@@ -1228,15 +1219,15 @@ impl Http {
     /// [Scheduled Event]: crate::model::guild::ScheduledEvent
     /// [Manage Events]: Permissions::MANAGE_EVENTS
     pub async fn delete_scheduled_event(&self, guild_id: u64, event_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteScheduledEvent {
-                guild_id,
-                event_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteScheduledEvent { guild_id, event_id },
             },
-        })
+        )
         .await
     }
 
@@ -1251,15 +1242,15 @@ impl Http {
         sticker_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::DeleteSticker {
-                guild_id,
-                sticker_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::DeleteSticker { guild_id, sticker_id },
             },
-        })
+        )
         .await
     }
 
@@ -1285,14 +1276,15 @@ impl Http {
     /// # }
     /// ```
     pub async fn delete_webhook(&self, webhook_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteWebhook {
-                webhook_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteWebhook { webhook_id },
             },
-        })
+        )
         .await
     }
 
@@ -1317,15 +1309,15 @@ impl Http {
     /// # }
     /// ```
     pub async fn delete_webhook_with_token(&self, webhook_id: u64, token: &str) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteWebhookWithToken {
-                token,
-                webhook_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteWebhookWithToken { token, webhook_id },
             },
-        })
+        )
         .await
     }
 
@@ -1342,9 +1334,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::EditChannel {
-                channel_id,
-            },
+            route: RouteInfo::EditChannel { channel_id },
         })
         .await
     }
@@ -1355,9 +1345,7 @@ impl Http {
             body: Some(to_string(map)?.as_bytes()),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditStageInstance {
-                channel_id,
-            },
+            route: RouteInfo::EditStageInstance { channel_id },
         })
         .await
     }
@@ -1376,10 +1364,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::EditEmoji {
-                guild_id,
-                emoji_id,
-            },
+            route: RouteInfo::EditEmoji { guild_id, emoji_id },
         })
         .await
     }
@@ -1497,9 +1482,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::EditGuild {
-                guild_id,
-            },
+            route: RouteInfo::EditGuild { guild_id },
         })
         .await
     }
@@ -1584,14 +1567,15 @@ impl Http {
     pub async fn edit_guild_channel_positions(&self, guild_id: u64, value: &Value) -> Result<()> {
         let body = to_vec(value)?;
 
-        self.wind(204, Request {
-            body: Some(&body),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::EditGuildChannels {
-                guild_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(&body),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::EditGuildChannels { guild_id },
             },
-        })
+        )
         .await
     }
 
@@ -1603,9 +1587,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditGuildWidget {
-                guild_id,
-            },
+            route: RouteInfo::EditGuildWidget { guild_id },
         })
         .await
     }
@@ -1622,9 +1604,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditGuildWelcomeScreen {
-                guild_id,
-            },
+            route: RouteInfo::EditGuildWelcomeScreen { guild_id },
         })
         .await
     }
@@ -1644,10 +1624,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: audit_log_reason.map(reason_into_header),
-                route: RouteInfo::EditMember {
-                    guild_id,
-                    user_id,
-                },
+                route: RouteInfo::EditMember { guild_id, user_id },
             })
             .await?
             .json::<Value>()
@@ -1675,10 +1652,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditMessage {
-                channel_id,
-                message_id,
-            },
+            route: RouteInfo::EditMessage { channel_id, message_id },
         })
         .await
     }
@@ -1701,10 +1675,7 @@ impl Http {
                 fields: vec![],
             }),
             headers: None,
-            route: RouteInfo::EditMessage {
-                channel_id,
-                message_id,
-            },
+            route: RouteInfo::EditMessage { channel_id, message_id },
         })
         .await
     }
@@ -1717,10 +1688,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::CrosspostMessage {
-                channel_id,
-                message_id,
-            },
+            route: RouteInfo::CrosspostMessage { channel_id, message_id },
         })
         .await
     }
@@ -1733,9 +1701,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditMemberMe {
-                guild_id,
-            },
+            route: RouteInfo::EditMemberMe { guild_id },
         })
         .await
     }
@@ -1747,14 +1713,15 @@ impl Http {
         let map = json!({ "nick": new_nickname });
         let body = to_vec(&map)?;
 
-        self.wind(200, Request {
-            body: Some(&body),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::EditMemberMe {
-                guild_id,
+        self.wind(
+            200,
+            Request {
+                body: Some(&body),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::EditMemberMe { guild_id },
             },
-        })
+        )
         .await
     }
 
@@ -1771,9 +1738,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::FollowNewsChannel {
-                channel_id: news_channel_id,
-            },
+            route: RouteInfo::FollowNewsChannel { channel_id: news_channel_id },
         })
         .await
     }
@@ -1847,10 +1812,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: audit_log_reason.map(reason_into_header),
-                route: RouteInfo::EditRole {
-                    guild_id,
-                    role_id,
-                },
+                route: RouteInfo::EditRole { guild_id, role_id },
             })
             .await?
             .json::<Value>()
@@ -1881,9 +1843,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: audit_log_reason.map(reason_into_header),
-                route: RouteInfo::EditRolePosition {
-                    guild_id,
-                },
+                route: RouteInfo::EditRolePosition { guild_id },
             })
             .await?
             .json::<Value>()
@@ -1917,10 +1877,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::EditScheduledEvent {
-                guild_id,
-                event_id,
-            },
+            route: RouteInfo::EditScheduledEvent { guild_id, event_id },
         })
         .await
     }
@@ -1943,10 +1900,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: audit_log_reason.map(reason_into_header),
-                route: RouteInfo::EditSticker {
-                    guild_id,
-                    sticker_id,
-                },
+                route: RouteInfo::EditSticker { guild_id, sticker_id },
             })
             .await?
             .json::<Value>()
@@ -1967,9 +1921,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditThread {
-                channel_id,
-            },
+            route: RouteInfo::EditThread { channel_id },
         })
         .await
     }
@@ -2010,15 +1962,15 @@ impl Http {
     pub async fn edit_voice_state(&self, guild_id: u64, user_id: u64, map: &JsonMap) -> Result<()> {
         let body = to_vec(map)?;
 
-        self.wind(204, Request {
-            body: Some(&body),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::EditVoiceState {
-                guild_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(&body),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::EditVoiceState { guild_id, user_id },
             },
-        })
+        )
         .await
     }
 
@@ -2060,14 +2012,15 @@ impl Http {
     pub async fn edit_voice_state_me(&self, guild_id: u64, map: &JsonMap) -> Result<()> {
         let body = to_vec(map)?;
 
-        self.wind(204, Request {
-            body: Some(&body),
-            multipart: None,
-            headers: None,
-            route: RouteInfo::EditVoiceStateMe {
-                guild_id,
+        self.wind(
+            204,
+            Request {
+                body: Some(&body),
+                multipart: None,
+                headers: None,
+                route: RouteInfo::EditVoiceStateMe { guild_id },
             },
-        })
+        )
         .await
     }
 
@@ -2115,9 +2068,7 @@ impl Http {
             body: Some(to_string(map)?.as_bytes()),
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::EditWebhook {
-                webhook_id,
-            },
+            route: RouteInfo::EditWebhook { webhook_id },
         })
         .await
     }
@@ -2159,10 +2110,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditWebhookWithToken {
-                token,
-                webhook_id,
-            },
+            route: RouteInfo::EditWebhookWithToken { token, webhook_id },
         })
         .await
     }
@@ -2232,11 +2180,7 @@ impl Http {
                 body: Some(&body),
                 multipart: None,
                 headers: Some(headers),
-                route: RouteInfo::ExecuteWebhook {
-                    token,
-                    wait,
-                    webhook_id,
-                },
+                route: RouteInfo::ExecuteWebhook { token, wait, webhook_id },
             })
             .await?;
 
@@ -2273,11 +2217,7 @@ impl Http {
                 fields: vec![],
             }),
             headers: None,
-            route: RouteInfo::ExecuteWebhook {
-                token,
-                wait,
-                webhook_id,
-            },
+            route: RouteInfo::ExecuteWebhook { token, wait, webhook_id },
         })
         .await
     }
@@ -2293,11 +2233,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetWebhookMessage {
-                token,
-                webhook_id,
-                message_id,
-            },
+            route: RouteInfo::GetWebhookMessage { token, webhook_id, message_id },
         })
         .await
     }
@@ -2316,11 +2252,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditWebhookMessage {
-                token,
-                webhook_id,
-                message_id,
-            },
+            route: RouteInfo::EditWebhookMessage { token, webhook_id, message_id },
         })
         .await
     }
@@ -2332,16 +2264,15 @@ impl Http {
         token: &str,
         message_id: u64,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteWebhookMessage {
-                token,
-                webhook_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteWebhookMessage { token, webhook_id, message_id },
             },
-        })
+        )
         .await
     }
 
@@ -2374,9 +2305,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetBans {
-                guild_id,
-            },
+            route: RouteInfo::GetBans { guild_id },
         })
         .await
     }
@@ -2394,13 +2323,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetAuditLogs {
-                action_type,
-                before,
-                guild_id,
-                limit,
-                user_id,
-            },
+            route: RouteInfo::GetAuditLogs { action_type, before, guild_id, limit, user_id },
         })
         .await
     }
@@ -2413,9 +2336,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetAutoModRules {
-                guild_id,
-            },
+            route: RouteInfo::GetAutoModRules { guild_id },
         })
         .await
     }
@@ -2428,10 +2349,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetAutoModRule {
-                guild_id,
-                rule_id,
-            },
+            route: RouteInfo::GetAutoModRule { guild_id, rule_id },
         })
         .await
     }
@@ -2446,9 +2364,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::CreateAutoModRule {
-                guild_id,
-            },
+            route: RouteInfo::CreateAutoModRule { guild_id },
         })
         .await
     }
@@ -2468,10 +2384,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::EditAutoModRule {
-                guild_id,
-                rule_id,
-            },
+            route: RouteInfo::EditAutoModRule { guild_id, rule_id },
         })
         .await
     }
@@ -2480,15 +2393,15 @@ impl Http {
     ///
     /// This method requires `MANAGE_GUILD` permissions.
     pub async fn delete_automod_rule(&self, guild_id: u64, rule_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::DeleteAutoModRule {
-                guild_id,
-                rule_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::DeleteAutoModRule { guild_id, rule_id },
             },
-        })
+        )
         .await
     }
 
@@ -2509,9 +2422,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelInvites {
-                channel_id,
-            },
+            route: RouteInfo::GetChannelInvites { channel_id },
         })
         .await
     }
@@ -2522,9 +2433,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelThreadMembers {
-                channel_id,
-            },
+            route: RouteInfo::GetChannelThreadMembers { channel_id },
         })
         .await
     }
@@ -2535,9 +2444,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildActiveThreads {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildActiveThreads { guild_id },
         })
         .await
     }
@@ -2553,11 +2460,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelArchivedPublicThreads {
-                channel_id,
-                before,
-                limit,
-            },
+            route: RouteInfo::GetChannelArchivedPublicThreads { channel_id, before, limit },
         })
         .await
     }
@@ -2573,11 +2476,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelArchivedPrivateThreads {
-                channel_id,
-                before,
-                limit,
-            },
+            route: RouteInfo::GetChannelArchivedPrivateThreads { channel_id, before, limit },
         })
         .await
     }
@@ -2593,66 +2492,64 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelJoinedPrivateArchivedThreads {
-                channel_id,
-                before,
-                limit,
-            },
+            route: RouteInfo::GetChannelJoinedPrivateArchivedThreads { channel_id, before, limit },
         })
         .await
     }
 
     /// Joins a thread channel.
     pub async fn join_thread_channel(&self, channel_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::JoinThread {
-                channel_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::JoinThread { channel_id },
             },
-        })
+        )
         .await
     }
 
     /// Leaves a thread channel.
     pub async fn leave_thread_channel(&self, channel_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::LeaveThread {
-                channel_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::LeaveThread { channel_id },
             },
-        })
+        )
         .await
     }
 
     /// Adds a member to a thread channel.
     pub async fn add_thread_channel_member(&self, channel_id: u64, user_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::AddThreadMember {
-                channel_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::AddThreadMember { channel_id, user_id },
             },
-        })
+        )
         .await
     }
 
     /// Removes a member from a thread channel.
     pub async fn remove_thread_channel_member(&self, channel_id: u64, user_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::RemoveThreadMember {
-                channel_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::RemoveThreadMember { channel_id, user_id },
             },
-        })
+        )
         .await
     }
 
@@ -2680,9 +2577,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannelWebhooks {
-                channel_id,
-            },
+            route: RouteInfo::GetChannelWebhooks { channel_id },
         })
         .await
     }
@@ -2693,9 +2588,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannel {
-                channel_id,
-            },
+            route: RouteInfo::GetChannel { channel_id },
         })
         .await
     }
@@ -2706,9 +2599,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetChannels {
-                guild_id,
-            },
+            route: RouteInfo::GetChannels { guild_id },
         })
         .await
     }
@@ -2719,9 +2610,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetStageInstance {
-                channel_id,
-            },
+            route: RouteInfo::GetStageInstance { channel_id },
         })
         .await
     }
@@ -2756,9 +2645,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetEmojis {
-                guild_id,
-            },
+            route: RouteInfo::GetEmojis { guild_id },
         })
         .await
     }
@@ -2769,10 +2656,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetEmoji {
-                guild_id,
-                emoji_id,
-            },
+            route: RouteInfo::GetEmoji { guild_id, emoji_id },
         })
         .await
     }
@@ -2821,9 +2705,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuild {
-                guild_id,
-            },
+            route: RouteInfo::GetGuild { guild_id },
         })
         .await
     }
@@ -2834,9 +2716,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildWithCounts {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildWithCounts { guild_id },
         })
         .await
     }
@@ -2918,9 +2798,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildWidget {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildWidget { guild_id },
         })
         .await
     }
@@ -2931,9 +2809,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildPreview {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildPreview { guild_id },
         })
         .await
     }
@@ -2944,9 +2820,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildWelcomeScreen {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildWelcomeScreen { guild_id },
         })
         .await
     }
@@ -2957,9 +2831,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildIntegrations {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildIntegrations { guild_id },
         })
         .await
     }
@@ -2970,9 +2842,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildInvites {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildInvites { guild_id },
         })
         .await
     }
@@ -2988,9 +2858,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildVanityUrl {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildVanityUrl { guild_id },
         })
         .await?
         .json::<GuildVanityUrl>()
@@ -3018,11 +2886,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::GetGuildMembers {
-                    after,
-                    guild_id,
-                    limit,
-                },
+                route: RouteInfo::GetGuildMembers { after, guild_id, limit },
             })
             .await?
             .json::<Value>()
@@ -3055,10 +2919,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildPruneCount {
-                days: req.days,
-                guild_id,
-            },
+            route: RouteInfo::GetGuildPruneCount { days: req.days, guild_id },
         })
         .await
     }
@@ -3070,9 +2931,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildRegions {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildRegions { guild_id },
         })
         .await
     }
@@ -3084,9 +2943,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::GetGuildRoles {
-                    guild_id,
-                },
+                route: RouteInfo::GetGuildRoles { guild_id },
             })
             .await?
             .json::<Value>()
@@ -3118,11 +2975,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetScheduledEvent {
-                guild_id,
-                event_id,
-                with_user_count,
-            },
+            route: RouteInfo::GetScheduledEvent { guild_id, event_id, with_user_count },
         })
         .await
     }
@@ -3141,10 +2994,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetScheduledEvents {
-                guild_id,
-                with_user_count,
-            },
+            route: RouteInfo::GetScheduledEvents { guild_id, with_user_count },
         })
         .await
     }
@@ -3203,9 +3053,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::GetGuildStickers {
-                    guild_id,
-                },
+                route: RouteInfo::GetGuildStickers { guild_id },
             })
             .await?
             .json::<Value>()
@@ -3229,10 +3077,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::GetGuildSticker {
-                    guild_id,
-                    sticker_id,
-                },
+                route: RouteInfo::GetGuildSticker { guild_id, sticker_id },
             })
             .await?
             .json::<Value>()
@@ -3269,9 +3114,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuildWebhooks {
-                guild_id,
-            },
+            route: RouteInfo::GetGuildWebhooks { guild_id },
         })
         .await
     }
@@ -3319,11 +3162,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetGuilds {
-                after,
-                before,
-                limit,
-            },
+            route: RouteInfo::GetGuilds { after, before, limit },
         })
         .await
     }
@@ -3356,12 +3195,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetInvite {
-                code,
-                member_counts,
-                expiration,
-                event_id,
-            },
+            route: RouteInfo::GetInvite { code, member_counts, expiration, event_id },
         })
         .await
     }
@@ -3373,10 +3207,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::GetMember {
-                    guild_id,
-                    user_id,
-                },
+                route: RouteInfo::GetMember { guild_id, user_id },
             })
             .await?
             .json::<Value>()
@@ -3395,10 +3226,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetMessage {
-                channel_id,
-                message_id,
-            },
+            route: RouteInfo::GetMessage { channel_id, message_id },
         })
         .await
     }
@@ -3409,10 +3237,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetMessages {
-                query: query.to_owned(),
-                channel_id,
-            },
+            route: RouteInfo::GetMessages { query: query.to_owned(), channel_id },
         })
         .await
     }
@@ -3443,9 +3268,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetPins {
-                channel_id,
-            },
+            route: RouteInfo::GetPins { channel_id },
         })
         .await
     }
@@ -3465,13 +3288,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetReactionUsers {
-                after,
-                channel_id,
-                limit,
-                message_id,
-                reaction,
-            },
+            route: RouteInfo::GetReactionUsers { after, channel_id, limit, message_id, reaction },
         })
         .await
     }
@@ -3482,9 +3299,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetSticker {
-                sticker_id,
-            },
+            route: RouteInfo::GetSticker { sticker_id },
         })
         .await
     }
@@ -3541,9 +3356,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetUser {
-                user_id,
-            },
+            route: RouteInfo::GetUser { user_id },
         })
         .await
     }
@@ -3610,9 +3423,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetWebhook {
-                webhook_id,
-            },
+            route: RouteInfo::GetWebhook { webhook_id },
         })
         .await
     }
@@ -3642,10 +3453,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetWebhookWithToken {
-                token,
-                webhook_id,
-            },
+            route: RouteInfo::GetWebhookWithToken { token, webhook_id },
         })
         .await
     }
@@ -3675,10 +3483,7 @@ impl Http {
             body: None,
             multipart: None,
             headers: None,
-            route: RouteInfo::GetWebhookWithToken {
-                token,
-                webhook_id,
-            },
+            route: RouteInfo::GetWebhookWithToken { token, webhook_id },
         })
         .await
     }
@@ -3695,28 +3500,29 @@ impl Http {
         user_id: u64,
         reason: &str,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: Some(reason_into_header(reason)),
-            route: RouteInfo::KickMember {
-                guild_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: Some(reason_into_header(reason)),
+                route: RouteInfo::KickMember { guild_id, user_id },
             },
-        })
+        )
         .await
     }
 
     /// Leaves a guild.
     pub async fn leave_guild(&self, guild_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::LeaveGuild {
-                guild_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::LeaveGuild { guild_id },
             },
-        })
+        )
         .await
     }
 
@@ -3744,9 +3550,7 @@ impl Http {
                 fields: vec![],
             }),
             headers: None,
-            route: RouteInfo::CreateMessage {
-                channel_id,
-            },
+            route: RouteInfo::CreateMessage { channel_id },
         })
         .await
     }
@@ -3759,9 +3563,7 @@ impl Http {
             body: Some(&body),
             multipart: None,
             headers: None,
-            route: RouteInfo::CreateMessage {
-                channel_id,
-            },
+            route: RouteInfo::CreateMessage { channel_id },
         })
         .await
     }
@@ -3773,15 +3575,15 @@ impl Http {
         message_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::PinMessage {
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::PinMessage { channel_id, message_id },
             },
-        })
+        )
         .await
     }
 
@@ -3792,15 +3594,15 @@ impl Http {
         user_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::RemoveBan {
-                guild_id,
-                user_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::RemoveBan { guild_id, user_id },
             },
-        })
+        )
         .await
     }
 
@@ -3817,16 +3619,15 @@ impl Http {
         role_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::RemoveMemberRole {
-                guild_id,
-                user_id,
-                role_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::RemoveMemberRole { guild_id, user_id, role_id },
             },
-        })
+        )
         .await
     }
 
@@ -3843,11 +3644,7 @@ impl Http {
                 body: None,
                 multipart: None,
                 headers: None,
-                route: RouteInfo::SearchGuildMembers {
-                    guild_id,
-                    query,
-                    limit,
-                },
+                route: RouteInfo::SearchGuildMembers { guild_id, query, limit },
             })
             .await?
             .json::<Value>()
@@ -3875,25 +3672,22 @@ impl Http {
             body: None,
             multipart: None,
             headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::StartGuildPrune {
-                days,
-                guild_id,
-            },
+            route: RouteInfo::StartGuildPrune { days, guild_id },
         })
         .await
     }
 
     /// Starts syncing an integration with a guild.
     pub async fn start_integration_sync(&self, guild_id: u64, integration_id: u64) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: None,
-            route: RouteInfo::StartIntegrationSync {
-                guild_id,
-                integration_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: None,
+                route: RouteInfo::StartIntegrationSync { guild_id, integration_id },
             },
-        })
+        )
         .await
     }
 
@@ -3943,15 +3737,15 @@ impl Http {
         message_id: u64,
         audit_log_reason: Option<&str>,
     ) -> Result<()> {
-        self.wind(204, Request {
-            body: None,
-            multipart: None,
-            headers: audit_log_reason.map(reason_into_header),
-            route: RouteInfo::UnpinMessage {
-                channel_id,
-                message_id,
+        self.wind(
+            204,
+            Request {
+                body: None,
+                multipart: None,
+                headers: audit_log_reason.map(reason_into_header),
+                route: RouteInfo::UnpinMessage { channel_id, message_id },
             },
-        })
+        )
         .await
     }
 
@@ -4085,6 +3879,11 @@ fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
 #[cfg(feature = "native_tls_backend")]
 fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
     builder.use_native_tls()
+}
+
+#[cfg(feature = "chrome")]
+fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
+    builder.chrome_builder(reqwest::browser::ChromeVersion::V106)
 }
 
 impl AsRef<Http> for Http {

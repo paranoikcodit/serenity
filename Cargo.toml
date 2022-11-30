@@ -15,6 +15,10 @@ include = ["src/**/*", "LICENSE.md", "README.md", "CHANGELOG.md", "build.rs"]
 [workspace]
 members = ["examples/*"]
 
+[patch.crates-io]
+hyper = { git = "https://github.com/4JX/hyper.git", branch = "v0.14.18-patched" }
+h2 = { git = "https://github.com/4JX/h2.git", branch = "imp" }
+
 [dependencies]
 bitflags = "1.3"
 serde_json = "1.0.75"
@@ -77,7 +81,7 @@ version = "1.0.13"
 default-features = false
 features = ["json", "multipart", "stream"]
 optional = true
-version = "0.11.7"
+git = "https://github.com/paranoikcodit/reqwest-impersonate.git"
 
 [dependencies.serenity-voice-model]
 path = "./voice-model"
@@ -180,7 +184,13 @@ http = []
 absolute_ratelimits = ["http"]
 model = ["builder", "http"]
 voice_model = ["serenity-voice-model"]
-standard_framework = ["framework", "uwl", "levenshtein", "command_attr", "static_assertions"]
+standard_framework = [
+    "framework",
+    "uwl",
+    "levenshtein",
+    "command_attr",
+    "static_assertions",
+]
 unstable_discord_api = []
 utils = ["base64"]
 voice = ["client", "model"]
@@ -192,6 +202,8 @@ simd_json = ["simd-json"]
 
 # Enables temporary caching in functions that retrieve data via the HTTP API.
 temp_cache = ["cache", "moka"]
+
+chrome_backend = ["reqwest/chrome", "tokio", "bytes"]
 
 # Backends to pick from:
 # - Rustls Backends
@@ -215,5 +227,11 @@ simdjson = ["simd_json"]
 voice-model = ["voice_model"]
 
 [package.metadata.docs.rs]
-features = ["default", "collector", "unstable_discord_api", "voice", "voice-model"]
+features = [
+    "default",
+    "collector",
+    "unstable_discord_api",
+    "voice",
+    "voice-model",
+]
 rustdoc-args = ["--cfg", "docsrs"]
