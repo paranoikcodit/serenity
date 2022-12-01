@@ -3881,7 +3881,7 @@ fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
     builder.use_native_tls()
 }
 
-#[cfg(feature = "chrome")]
+#[cfg(feature = "chrome_backend")]
 fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
     builder.chrome_builder(reqwest::browser::ChromeVersion::V106)
 }
