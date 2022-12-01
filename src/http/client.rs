@@ -3871,7 +3871,7 @@ impl Http {
     }
 }
 
-#[cfg(not(feature = "native_tls_backend"))]
+#[cfg(feature = "rustls_backend")]
 fn configure_client_backend(builder: ClientBuilder) -> ClientBuilder {
     builder.use_rustls_tls()
 }
